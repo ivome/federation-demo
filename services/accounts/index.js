@@ -6,7 +6,7 @@ const typeDefs = gql`
     me: User
   }
 
-  type User @key(fields: "id") {
+  type User @key(fields: "id") @key(fields: "username") {
     id: ID!
     name: String
     username: String
@@ -21,7 +21,12 @@ const resolvers = {
   },
   User: {
     __resolveReference(object) {
-      return users.find(user => user.id === object.id);
+      console.log('Resolve reference', object);
+      if (object.hasOwnProperty('id')) {
+        return users.find(user => user.id === object.id);
+      } else {
+        return users.find(user => user.username === object.username);
+      }
     }
   }
 };
